@@ -10,8 +10,8 @@ router.post("/url/shorten", url.createShortUrl)
 
 router.get("/:urlCode", url.getUrl)
 
-// router.all("/**", function(req,res){
-//     res.status(400).send("Invlaid endPoint")
-// })
+router.all("/**", function(req,res){
+    res.status(400).send("Invlaid endPoint")
+})
 
 module.exports=router
