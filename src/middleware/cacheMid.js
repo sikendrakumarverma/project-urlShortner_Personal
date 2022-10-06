@@ -11,7 +11,7 @@ const getShortUrl = async function (req, res,next) {
           .status(400)
           .send({ status: false, message: "pls provide url" });
       }
-      let data = {};
+      
       const longUrl = req.body.longUrl;
   
       if (!validator.isValid(longUrl)) {
@@ -31,18 +31,16 @@ const getShortUrl = async function (req, res,next) {
           .status(400)
           .send({ status: false, message: "please enter a valid url" });
       }
-      data.longUrl = longUrl;
   
       // Checking urlData in cached memory
       const urlData = await redis.GET_ASYNC(longUrl)
       
       if(urlData){
-          return res.status(200).send({status:true, message:"present in cach memory", data:JSON.parse(urlData) })
+          return res.status(200).send({status:true, message:"already present in cach memory", data:JSON.parse(urlData) })
       }
-      
+
         next()
-      
-      
+       
     } catch (err) {
       return res.status(500).send({ status: false, message: err.message });
     }
