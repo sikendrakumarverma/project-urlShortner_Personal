@@ -12,8 +12,7 @@ const createShortUrl = async function (req, res) {
     // check for correct longUrl Axios
     const options = {
       method: "get",
-      url: longUrl,
-      withCredentials: true
+      url: longUrl
     };
 
  
@@ -25,11 +24,8 @@ const createShortUrl = async function (req, res) {
       }
     });
     
-    // const urlData = await axios({
-    //   method:"get",
-    //   url:longUrl
-    // })
-    console.log(siteData);
+    
+    // console.log(siteData);
     if (!siteData.data) return;
 
     // checking shortUrl in dataBase
