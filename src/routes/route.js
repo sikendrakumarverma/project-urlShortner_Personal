@@ -1,14 +1,15 @@
 const express = require("express")
 const router = express.Router()
 const url = require("../controller/urlController")
+const mid = require("../middleware/cacheMid")
 
 router.get("/test-me", function(req,res){
     res.send("api running")
 })
 
-router.post("/url/shorten", url.createShortUrl)
+router.post("/url/shorten",mid.getShortUrl, url.createShortUrl)
 
-router.get("/:urlCode", url.getUrl)
+router.get("/:urlCode",mid.getLongUrl, url.getUrl)
 
 router.all("/**", function(req,res){
     res.status(400).send("Invlaid endPoint")

@@ -1,4 +1,24 @@
 
 
-console.log(/^(ftp|http|https):\/\/[^ "]+$/.test("https://babeljs.io/blog/2020/10/15/7.12.0#class-static-blocks-12079httpsgithubcombabelbabelpull12079-12143httpsgithubcombabelbabelpull12143")
-)
+function getAllSubstrings(str) {
+    var i, j, result = [];
+  
+    for (i = 0; i < str.length; i++) {
+        for (j = i + 1; j < str.length + 1; j++) {
+            result.push(+str.slice(i, j));
+        }
+    }
+    return result;
+  }
+
+  function makeFunc() {
+    const name = 'Mozilla';
+    function displayName() {
+      console.log(name);
+    }
+    return displayName;
+  }
+  
+  const myFunc = makeFunc();
+//   console.log(myFunc)
+  myFunc();
