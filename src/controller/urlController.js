@@ -3,52 +3,55 @@ const shortId = require("shortid");
 const redis = require("../utils/redis");
 const axios = require("axios");
 
+
 const createShortUrl = async function (req, res) {
   try {
     let data = {};
-    const longUrl = req.body.longUrl;
-
-    data.longUrl = longUrl;
-    // check for correct longUrl Axios
-    const options = {
-      method: "get",
-      url: longUrl
-    };
-
- 
-    const siteData = await axios(options).catch(function (error) {
-      if (error) {
-        return res
-          .status(400)
-          .send({ status: false, message: "no such url found" });
-      }
-    });
+   
+    longUrl = req.body.longUrl;
     
-    
-    // console.log(siteData);
-    if (!siteData.data) return;
-
     // checking shortUrl in dataBase
     const existedUrl = await urlModel
       .findOne({ longUrl })
       .lean()
       .select({ _id: 0, __v: 0 });
+
     if (existedUrl) {
-      await redis.SETEX_ASYNC(longUrl, 6, JSON.stringify(existedUrl));
+      await redis.SETEX_ASYNC(longUrl, 60*60, JSON.stringify(existedUrl));
       return res
         .status(200)
         .send({ status: true, message: "already shorted", data: existedUrl });
     }
 
+    const options = {
+      method: "get",
+      url: longUrl
+    };
+
+    const isValidUrl = false
+     await axios(options).catch(function (error) {
+      if (error) {
+        isValidUrl = true
+      }
+    });
+    
+    // console.log(siteData);
+    if (isValidUrl) { 
+      return res
+        .status(400)
+        .send({ status: false, message: "no such url found" });
+      }
+
     // generating shortUrl
     const urlCode = shortId.generate(longUrl).toLowerCase();
 
     const shortUrl = `http://localhost:3000/${urlCode}`;
+    data.longUrl = longUrl
     data.shortUrl = shortUrl;
     data.urlCode = urlCode;
 
-    await redis.SETEX_ASYNC(longUrl, 5, JSON.stringify(data));
-    await redis.SETEX_ASYNC(urlCode, 5, longUrl);
+    await redis.SETEX_ASYNC(longUrl, 60*60, JSON.stringify(data));
+    await redis.SETEX_ASYNC(urlCode, 60*60, longUrl);
 
     // creating short url
     await urlModel.create(data);
@@ -74,12 +77,16 @@ const getUrl = async function (req, res) {
         .send({ status: false, message: "no longUrl found" });
     }
 
-    await redis.SETEX_ASYNC(urlCode, 5, shortUrl.longUrl);
+    await redis.SETEX_ASYNC(urlCode, 60*60, shortUrl.longUrl);
 
     return res.status(302).redirect(shortUrl.longUrl);
   } catch (err) {
     return res.status(500).send({ status: false, message: err.message });
   }
 };
+
+
+
+
 
 module.exports = { createShortUrl, getUrl };

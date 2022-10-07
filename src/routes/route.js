@@ -11,6 +11,8 @@ router.post("/url/shorten",mid.getShortUrl, url.createShortUrl)
 
 router.get("/:urlCode",mid.getLongUrl, url.getUrl)
 
+// router.put("/new", url.update)
+
 // router.all("/**", function(req,res){
 //     res.status(400).send("Invlaid endPoint")
 // })
