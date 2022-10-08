@@ -19,8 +19,4 @@ const SET_ASYNC = promisify(redisClient.set).bind(redisClient);
 const SETEX_ASYNC = promisify(redisClient.setex).bind(redisClient)
 const GET_ASYNC = promisify(redisClient.get).bind(redisClient);
 
-module.exports={
-    SET_ASYNC,
-    SETEX_ASYNC,
-    GET_ASYNC
-}
+module.exports={ SET_ASYNC, SETEX_ASYNC, GET_ASYNC }

@@ -1,8 +1,3 @@
-urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
-
-const validateUrl = function (url) {
-  return urlRegex.test(url);
-};
 
 const isValid = function (value) {
   if (typeof value === "undefined" || value === null) return false;
@@ -12,6 +7,12 @@ const isValid = function (value) {
 
 const isValidRequestBody = function (requestBody) {
   return Object.keys(requestBody).length > 0;
+};
+
+urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
+
+const validateUrl = function (url) {
+  return urlRegex.test(url);
 };
 
 module.exports = {validateUrl,isValid,isValidRequestBody,}

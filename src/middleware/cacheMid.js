@@ -2,44 +2,27 @@ const redis = require("../utils/redis")
 const validator = require("../utils/validation");
 const validUrl = require("valid-url");
 
-
-
-
 const getShortUrl = async function (req, res,next) {
     try {
       if (!validator.isValidRequestBody(req.body)) {
-        return res
-          .status(400)
-          .send({ status: false, message: "pls provide url" });
+        return res.status(400).send({ status: false, message: "pls provide url" });
       }
-      
       const longUrl = req.body.longUrl;
-  
       if (!validator.isValid(longUrl)) {
-        return res
-          .status(400)
-          .send({ status: false, message: "longurl is mandatory" });
+        return res.status(400).send({ status: false, message: "longurl is mandatory" });
       }
-  
       // validating longurl
       if (!validator.validateUrl(longUrl)) {
-        return res
-          .status(400)
-          .send({ status: false, message: "Invalid longUrl" });
+        return res.status(400).send({ status: false, message: "Invalid longUrl" });
       }
       if (!validUrl.isUri(longUrl)) {
-        return res
-          .status(400)
-          .send({ status: false, message: "please enter a valid url" });
+        return res.status(400).send({ status: false, message: "please enter a valid url" });
       }
-  
-    
-
       // Checking urlData in cached memory
       const urlData = await redis.GET_ASYNC(longUrl)
       
       if(urlData){
-          return res.status(200).send({status:true, message:"already present in cach memory", data:JSON.parse(urlData) })
+          return res.status(200).send({status:true, message:"already present in cache memory", data:JSON.parse(urlData) })
       }
 
       next()
@@ -59,10 +42,9 @@ const getShortUrl = async function (req, res,next) {
           // console.log(cachedUrl)
         return res.status(302).redirect(cachedUrl)
       }
-      
-        next()
-        
-    } 
+      next()
+
+      } 
     catch(err) {
       return res.status(500).send({ status: false, message: err.message });
     }
