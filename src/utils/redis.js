@@ -4,7 +4,7 @@ const { promisify } = require("util");
 const redisClient = redis.createClient(
   11134,
   "redis-11134.c301.ap-south-1-1.ec2.cloud.redislabs.com",
-  { no_ready_check: true }
+  { no_ready_check: true }  // indicates whether the server is ready for more commands. When ready
 );
 
 redisClient.auth("n27DqEhQe0CqXoEFhL6ILKyyIFJq0Z64", function (err) {
